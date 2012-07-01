@@ -2,7 +2,7 @@ class Array
   def comments
     []
   end
-  
+
   def sexp_type
     first
   end
@@ -30,20 +30,20 @@ module Roffle
     def self.create_new_method(new_method_name, body)
       code = <<-RUBY
 def #{new_method_name}
-#{Serializer.to_ruby(body)}
+  #{Serializer.to_ruby(body)}
 end
-RUBY
-Serializer.to_ruby(code)
+      RUBY
+      Serializer.to_ruby(code)
     end
   end
 
   module Refactorings
     class ExtractMethod
-      def self.extract_method(code, new_method_name, start_line, end_line, start_column, end_column)
-        new(code, new_method_name, start_line..end_line, start_column..end_column).extract_method
+      def self.extract_method(code, new_method_name, start_line, end_line)
+        new(code, new_method_name, start_line..end_line).extract_method
       end
 
-      def initialize(code, new_method_name, lines, _)
+      def initialize(code, new_method_name, lines)
         @code = code
         @new_method_name = new_method_name
         @lines = lines
@@ -61,12 +61,18 @@ Serializer.to_ruby(code)
       end
 
       def replace_body(method_definition, lines, new_method_name)
-        new_body = []
-        new_body.concat(method_definition.body.array.take(lines.first))
-        new_body << "#{new_method_name}()".to_ast
-        new_body.concat(method_definition.body.array.drop(lines.first + 1))
+        replacement = "#{new_method_name}()".to_ast
+        new_body = substitute_lines(method_definition.body.array, lines, replacement)
         method_definition.body.array = new_body
         Serializer.to_ruby(method_definition)
+      end
+
+      def substitute_lines(body, lines, ast)
+        new_body = []
+        new_body.concat body.take_while { |i| i.line < lines.first }
+        new_body << ast
+        new_body.concat body.drop_while { |i| i.line <= lines.last }
+        new_body
       end
     end
   end
