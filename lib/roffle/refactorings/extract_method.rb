@@ -1,6 +1,6 @@
 class Array
   def comments
-    []
+    ""
   end
 
   def sexp_type
@@ -29,9 +29,9 @@ module Roffle
   class CreatesMethods
     def self.create_new_method(new_method_name, body)
       code = <<-RUBY
-def #{new_method_name}
-  #{Serializer.to_ruby(body)}
-end
+        def #{new_method_name}
+          #{Serializer.to_ruby(body)}
+        end
       RUBY
       Serializer.to_ruby(code)
     end
@@ -51,7 +51,6 @@ end
 
       def extract_method
         ast = @code.to_ast
-
         body = FindsBodies.find(ast, @lines)
 
         extracted = CreatesMethods.create_new_method(@new_method_name, body)
