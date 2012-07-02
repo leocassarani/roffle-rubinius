@@ -1,4 +1,4 @@
-RSpec::Matchers.define :be_a_refactoring_of do |expected|
+RSpec::Matchers.define :be_equivalent_to do |expected|
   match do |actual|
     actual.to_sexp.should == expected.to_sexp
   end

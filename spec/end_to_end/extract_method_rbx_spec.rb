@@ -21,7 +21,7 @@ describe 'extracting a method' do
         bar
       end
     RUBY
-    Roffle::Refactorings::ExtractMethod.extract_method(code, 'bar', 2, 2).should be_a_refactoring_of(extracted_code)
+    Roffle::Refactorings::ExtractMethod.extract_method(code, 'bar', 2, 2).should be_equivalent_to(extracted_code)
   end
 
   it 'ignores lines outside of the refactoring' do
@@ -41,7 +41,7 @@ describe 'extracting a method' do
         puts "345"
       end
     RUBY
-    Roffle::Refactorings::ExtractMethod.extract_method(code, 'bar', 2, 2).should be_a_refactoring_of(extracted_code)
+    Roffle::Refactorings::ExtractMethod.extract_method(code, 'bar', 2, 2).should be_equivalent_to(extracted_code)
   end
 end
 
