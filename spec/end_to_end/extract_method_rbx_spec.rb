@@ -43,5 +43,29 @@ describe 'extracting a method' do
     RUBY
     Roffle::Refactorings::ExtractMethod.extract_method(code, 'bar', 2, 2).should be_equivalent_to(extracted_code)
   end
+
+  it "extracts multiple lines" do
+    code = <<-RUBY
+      def foo
+        puts "123"
+        puts "345"
+        puts "567"
+      end
+    RUBY
+
+    extracted_code = <<-RUBY
+      def bar
+        puts "345"
+        puts "567"
+      end
+
+      def foo
+        puts "123"
+        bar
+      end
+    RUBY
+
+    Roffle::Refactorings::ExtractMethod.extract_method(code, 'bar', 3, 4).should be_equivalent_to(extracted_code)
+  end
 end
 
